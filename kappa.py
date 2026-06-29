@@ -200,7 +200,7 @@ def cmd_drift(args):
 # (regex, human_label, fix). Each encodes a known LLM-as-a-Judge failure mode.
 _LINT_CHECKS = [
     (
-        r"\b(rubric|criteria|scale|score from|0\s*[-–]\s*\d|1\s*[-–]\s*(5|10)|points?)\b",
+        r"\brubric\b|\bcriteria\b|\bscale\b|\bscores?\b|\brate\b|\brating\b|\bpoints?\b|\d\s*[-–]\s*\d{1,3}|out of \d",
         "explicit rubric / scoring scale",
         "Define explicit criteria and a scale — don't ask 'is this good?'. Vague judges are noisy.",
     ),

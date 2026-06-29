@@ -131,6 +131,16 @@ class TestLintCLI(unittest.TestCase):
         self.assertEqual(rc, 1)              # some checks failed
         self.assertIn("fix:", buf.getvalue())
 
+    def test_numeric_scale_passes_rubric_check(self):
+        # regression: "score 0-100" is an explicit scale and must NOT warn on rubric
+        p = "Score each segment 0-100 for quality. Reply with JSON."
+        path = self._tmp(p)
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            kappa.main(["lint", path])
+        out = buf.getvalue()
+        self.assertIn("✓ explicit rubric / scoring scale", out)
+
     def test_pairwise_without_order_safeguard_warns(self):
         pw = "Compare response A and response B. Which one is better? Use a rubric, scale 1-5, explain reasoning, ignore length."
         path = self._tmp(pw)
