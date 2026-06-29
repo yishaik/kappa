@@ -1,0 +1,15 @@
+{"id": "t-001", "judge": "pass", "human": "pass"}
+{"id": "t-002", "judge": "pass", "human": "pass"}
+{"id": "t-003", "judge": "pass", "human": "revise", "text": "judge missed a factual error"}
+{"id": "t-004", "judge": "revise", "human": "revise"}
+{"id": "t-005", "judge": "pass", "human": "pass"}
+{"id": "t-006", "judge": "pass", "human": "pass"}
+{"id": "t-007", "judge": "revise", "human": "pass", "text": "judge too harsh on style"}
+{"id": "t-008", "judge": "pass", "human": "pass"}
+{"id": "t-009", "judge": "revise", "human": "revise"}
+{"id": "t-010", "judge": "pass", "human": "pass"}
+{"id": "t-011", "judge": "pass", "human": "pass"}
+{"id": "t-012", "judge": "pass", "human": "revise", "text": "judge accepted a hallucinated citation"}
+{"id": "t-013", "judge": "revise", "human": "revise"}
+{"id": "t-014", "judge": "pass", "human": "pass"}
+{"id": "t-015", "judge": "pass", "human": "pass"}
