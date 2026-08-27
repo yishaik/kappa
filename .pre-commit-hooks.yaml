@@ -1,0 +1,8 @@
+- id: kappa-lint
+  name: kappa lint (judge-prompt bias pitfalls)
+  description: >-
+    Scan judge prompts for the well-known LLM-as-a-Judge bias pitfalls.
+    Exits 1 on any warning, which blocks the commit - that is the point.
+  entry: kappa lint
+  language: python
+  files: '(judge|prompt|rubric).*\.(txt|md)$'

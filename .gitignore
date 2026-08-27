@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+dist/
+build/
+*.egg-info/
 report.html
-*.html
-!examples/*.html
