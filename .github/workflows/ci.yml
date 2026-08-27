@@ -1,0 +1,87 @@
+name: ci
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        exclude:
+          # 3.8 is unavailable on the current macOS/ubuntu ARM images; keep the
+          # oldest supported version pinned to the x64 Windows + Linux legs.
+          - os: ubuntu-latest
+            python-version: "3.8"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Unit tests
+        run: python -m unittest discover -v
+
+      # Smoke-run every subcommand against the bundled examples. Output is
+      # redirected to a file on purpose: that is the exact condition under which
+      # lint used to die with UnicodeEncodeError on a Windows codepage.
+      - name: Smoke - score (redirected)
+        run: python kappa.py score examples/verdicts.jsonl > score.txt
+
+      - name: Smoke - score --json
+        run: python kappa.py score examples/verdicts.jsonl --json --boot 0 > score.json
+
+      - name: Smoke - lint (redirected, expects exit 1)
+        shell: bash
+        run: |
+          set +e
+          python kappa.py lint examples/judge_prompt.txt > lint.txt
+          rc=$?
+          set -e
+          grep -q "checks passed" lint.txt
+          test "$rc" = "1"
+
+      - name: Smoke - lint a good prompt (expects exit 0)
+        run: python kappa.py lint examples/judge_prompt_good.txt
+
+      - name: Smoke - drift
+        run: python kappa.py drift examples/verdicts.jsonl examples/verdicts.jsonl
+
+      - name: Smoke - sample
+        run: python kappa.py sample examples/verdicts.jsonl -n 4 --seed 1
+
+      - name: Smoke - help and version
+        run: |
+          python kappa.py --help
+          python kappa.py --version
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check kappa.py test_kappa.py
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build twine
+      - run: python -m build
+      - run: twine check dist/*
+      # Prove the console entry point works from an installed wheel.
+      - run: pip install dist/*.whl
+      - run: kappa score examples/verdicts.jsonl --json --boot 0
+      - run: kappa --version

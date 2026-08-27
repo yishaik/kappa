@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kappa-eval"
+version = "0.4.0"
+description = "Tiny zero-dependency evaluation kit for LLM-as-a-Judge: judge-human agreement, drift, and a judge-prompt bias linter."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Yishai Kohn" }]
+keywords = [
+    "llm-as-a-judge",
+    "llm-evaluation",
+    "judge-human-agreement",
+    "judge-calibration",
+    "meta-evaluation",
+    "cohens-kappa",
+    "inter-rater-reliability",
+    "evals",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+]
+# Deliberately empty, and it stays that way. Zero runtime dependencies is the
+# whole point of this tool.
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/yishaik/kappa"
+Source = "https://github.com/yishaik/kappa"
+Issues = "https://github.com/yishaik/kappa/issues"
+
+[project.optional-dependencies]
+# Dev tooling only. Never imported at runtime.
+dev = ["ruff>=0.6", "mypy>=1.10"]
+
+[project.scripts]
+kappa = "kappa:main"
+
+[tool.setuptools]
+py-modules = ["kappa"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+# E501: long lines are handled by the formatter's line-length, not enforced here.
+# UP031: this module uses %-formatting throughout, deliberately - it targets 3.8
+# and the style is uniform. Converting ~80 call sites buys nothing.
+ignore = ["E501", "UP031"]
+
+[tool.mypy]
+python_version = "3.8"
+ignore_missing_imports = true
+warn_unused_ignores = true
