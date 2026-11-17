@@ -6,6 +6,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+
+# Runaway guardrail: a newer push to the same branch/PR cancels the run still in flight.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     strategy:
